@@ -10,7 +10,7 @@ function generatePieces () {
     const pTop = Math.floor(i / bX) * 40
     const pLeft = (i % bX) * 40
     const color = colors[Math.floor(Math.random() * colors.length)]
-    $('<div class="p"></div>').attr('id', i).css('top', pTop).css('left', pLeft).css('background-color', color).appendTo('#board').click(
+    $('<div class="p"></div>').attr('id', i).css('top', pTop).css('left', pLeft).css('background-color', color).data('color', color).appendTo('#board').click(
       function () {
         if (isMarked(this)) {
           deleteMarked()
@@ -121,7 +121,7 @@ function checkTRBL (el) {
 }
 
 function same (el, nb) {
-  return el.style.backgroundColor === $('#' + nb).css('backgroundColor')
+  return $(el).data('color') === $('#' + nb).data('color')
 }
 function isMarked (el) {
   return $(el).hasClass('mark')
