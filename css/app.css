@@ -1,0 +1,20 @@
+.p {
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  position: absolute;
+  height: 40px;
+  width: 40px;
+}
+
+.p {
+  text-align: center;
+}
+
+#board {
+  top: 3em;
+  position: absolute;
+}
+
+.mark {
+  opacity: 0.5
+}

@@ -1,159 +1,16 @@
-<html>
+<!doctype html>
+<html lang="en">
 	<head>
-		<style type="text/css">
-			.p {border-top:1px solid black; border-left:1px solid black; position:absolute; height:40px; width:40px;}
-			.p {text-align:center;}
-			#board {top:3em;position:absolute;}
-			.mark {opacity: 0.5}
-		</style>
+		<meta charset="utf-8">
+		<title>SameGame</title>
+		<link rel="stylesheet" href="css/app.css">
 	<body>
 		<div>Total: <span id="total"></span></div>
 		<div>Points: <span id="points"></span></div>
 		<div id="board"></div>
 			
 		<script type="text/javascript" src="jquery-1.2.3.min.js"></script>
-		<script type="text/javascript">
-			var colors = ["Red", "Blue", "Green", "Purple"];
-			var bX = 31;
-			var bY = 19;
-			var points = 0;
-			var total = 0;
-			function generatePieces() {
-				for (var i=0; i<bX*bY; i++) {
-					var pTop = parseInt(i/bX) * 40;
-					var pLeft = (i%bX) * 40;
-					var color = colors[Math.floor(Math.random()*colors.length)];
-					$('<div class="p"></div>').attr("id", i).css("top", pTop).css("left", pLeft).css("background-color",color).appendTo("#board").click(
-						function() {
-							if(isMarked(this)) {
-								deleteMarked();
-								settleDown();
-								settleLeft();
-								updateTotal(points);
-							}
-							else {
-								$(".mark").removeClass("mark");
-								var n = checkTRBL(this);
-								points = (n-1)*(n-1);
-								$("#points").html(""+points);
-								if(n) {
-									mark(this);
-								} else {
-									updatePoints(0);
-								}
-							}
-						}
-					)
-				}
-			}
-			generatePieces();
-			
-			function updatePoints(n) {
-				points = n;
-				$("#points").html(n);
-			}
-			
-			function updateTotal() {
-				total += points;
-				$("#total").html(""+total);
-				updatePoints(0);
-			}
-			
-			function settleLeft() {
-				var again = false;
-				for (var h=0; h<bX-1; h++) {
-					var col = new Array();
-					for (var v=0; v<bY; v++) {
-						var id = h+(bX*v);
-						if(document.getElementById(id)) {
-							break;
-						} else {
-							col.push(id);
-							if (col.length == bY) {
-								while(col.length > 0) {
-									var oid = col.pop();
-									if(document.getElementById(oid+1)) {
-										var again = true;
-										$("#"+(oid+1)).attr("id", oid).animate({left: "-=40"}, 10);
-									}
-								}
-							}
-						}
-					}
-				}
-				if (again) settleLeft();
-			}
-			
-			function settleDown() {
-				var again = false;
-				for (var i=bX*bY-1; i>-1; i--) {
-					if(!document.getElementById(i)) {
-						if(document.getElementById(i-bX)) {
-							$("#"+(i-bX)).attr("id", i).animate({top: "+=40"}, 10);
-							again = true;
-						}
-					}
-				}
-				if (again) settleDown();
-			}
-			
-			function deleteMarked() {
-				$(".mark").remove();
-			}
-			
-			function mark(el) {
-				$(el).addClass("mark");
-			}
-			
-			function unMark(el) {
-				
-			}
-			
-			function checkTRBL(el) {
-				var c = 0;
-				var t = parseInt(el.id) - bX;
-				var r = parseInt(el.id) +1;
-				var b = parseInt(el.id) + bX;
-				var l = parseInt(el.id) - 1;
-				if(t > -1 && same(el,t) && !isMarked(document.getElementById(t)))
-				{
-					c++;
-					mark(document.getElementById(t));
-					c += checkTRBL(document.getElementById(t));
-				}
-				if(r%bX != 0 && same(el,r) && !isMarked(document.getElementById(r)))
-				{
-					c++;
-					mark(document.getElementById(r));
-					c += checkTRBL(document.getElementById(r));
-				}
-				if(b < bX*bY && same(el,b) && !isMarked(document.getElementById(b)))
-				{
-					c++;
-					mark(document.getElementById(b));
-					c += checkTRBL(document.getElementById(b));
-				}
-				if((l+1)%bX != 0 && same(el,l) && !isMarked(document.getElementById(l)))
-				{
-					c++;
-					mark(document.getElementById(l));
-					c += checkTRBL(document.getElementById(l));
-				}
-				return c;
-			}
-			
-			function same(el,nb) {
-				if(el.style.backgroundColor == $("#"+nb).css("backgroundColor")) {
-					return true;
-				} else {
-					return false;
-				}
-			}
-			function isMarked(el) {
-				return $(el).hasClass("mark");
-			}
-			
-		</script>
-		
+		<script type="text/javascript" src="js/app.js"></script>
+
 	</body>
 </html>
