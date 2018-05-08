@@ -6,15 +6,15 @@ jQuery(function ($) {
   const App = {
 
     colors: ['Red', 'Blue', 'Green', 'Purple'],
-    bX: 25,
-    bY: 15,
+    boardWidth: 25,
+    boardHeight: 15,
     points: 0,
     total: 0,
 
     init: function () {
-      for (let i = 0; i < this.bX * this.bY; i++) {
-        const pTop = Math.floor(i / this.bX) * 40
-        const pLeft = (i % this.bX) * 40
+      for (let i = 0; i < this.boardWidth * this.boardHeight; i++) {
+        const pTop = Math.floor(i / this.boardWidth) * 40
+        const pLeft = (i % this.boardWidth) * 40
         const color = this.colors[Math.floor(Math.random() * this.colors.length)]
         $('<div class="p"></div>').attr('id', i).css('top', pTop).css('left', pLeft).css('background-color', color).data('color', color).appendTo('#board').click(this.handleTileClick.bind(this))
       }
@@ -53,15 +53,15 @@ jQuery(function ($) {
 
     settleLeft: function () {
       let again = false
-      for (let h = 0; h < this.bX - 1; h++) {
+      for (let h = 0; h < this.boardWidth - 1; h++) {
         const col = []
-        for (let v = 0; v < this.bY; v++) {
-          const id = h + (this.bX * v)
+        for (let v = 0; v < this.boardHeight; v++) {
+          const id = h + (this.boardWidth * v)
           if (document.getElementById(id.toString())) {
             break
           } else {
             col.push(id)
-            if (col.length === this.bY) {
+            if (col.length === this.boardHeight) {
               while (col.length > 0) {
                 const oid = col.pop()
                 if (document.getElementById(oid + 1)) {
@@ -78,10 +78,10 @@ jQuery(function ($) {
 
     settleDown: function () {
       let again = false
-      for (let i = this.bX * this.bY - 1; i > -1; i--) {
+      for (let i = this.boardWidth * this.boardHeight - 1; i > -1; i--) {
         if (!document.getElementById(i.toString())) {
-          if (document.getElementById((i - this.bX).toString())) {
-            $('#' + (i - this.bX)).attr('id', i).animate({top: '+=40'}, 10)
+          if (document.getElementById((i - this.boardWidth).toString())) {
+            $('#' + (i - this.boardWidth)).attr('id', i).animate({top: '+=40'}, 10)
             again = true
           }
         }
@@ -99,26 +99,26 @@ jQuery(function ($) {
 
     checkTRBL: function (el) {
       let c = 0
-      const t = parseInt(el.id) - this.bX
+      const t = parseInt(el.id) - this.boardWidth
       const r = parseInt(el.id) + 1
-      const b = parseInt(el.id) + this.bX
+      const b = parseInt(el.id) + this.boardWidth
       const l = parseInt(el.id) - 1
       if (t > -1 && this.same(el, t) && !this.isMarked(document.getElementById(t.toString()))) {
         c++
         this.mark(document.getElementById(t.toString()))
         c += this.checkTRBL(document.getElementById(t.toString()))
       }
-      if (r % this.bX !== 0 && this.same(el, r) && !this.isMarked(document.getElementById(r.toString()))) {
+      if (r % this.boardWidth !== 0 && this.same(el, r) && !this.isMarked(document.getElementById(r.toString()))) {
         c++
         this.mark(document.getElementById(r.toString()))
         c += this.checkTRBL(document.getElementById(r.toString()))
       }
-      if (b < this.bX * this.bY && this.same(el, b) && !this.isMarked(document.getElementById(b.toString()))) {
+      if (b < this.boardWidth * this.boardHeight && this.same(el, b) && !this.isMarked(document.getElementById(b.toString()))) {
         c++
         this.mark(document.getElementById(b.toString()))
         c += this.checkTRBL(document.getElementById(b.toString()))
       }
-      if ((l + 1) % this.bX !== 0 && this.same(el, l) && !this.isMarked(document.getElementById(l.toString()))) {
+      if ((l + 1) % this.boardWidth !== 0 && this.same(el, l) && !this.isMarked(document.getElementById(l.toString()))) {
         c++
         this.mark(document.getElementById(l.toString()))
         c += this.checkTRBL(document.getElementById(l.toString()))
