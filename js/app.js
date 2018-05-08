@@ -12,11 +12,14 @@ jQuery(function ($) {
     total: 0,
 
     init: function () {
+      $('#board').width(this.boardWidth * 40).height(this.boardHeight * 40)
+      $('#board-container').width(this.boardWidth * 40)
+
       for (let i = 0; i < this.boardWidth * this.boardHeight; i++) {
         const pTop = Math.floor(i / this.boardWidth) * 40
         const pLeft = (i % this.boardWidth) * 40
         const color = this.colors[Math.floor(Math.random() * this.colors.length)]
-        $('<div class="p"></div>').attr('id', i).css('top', pTop).css('left', pLeft).css('background-color', color).data('color', color).appendTo('#board').click(this.handleTileClick.bind(this))
+        $('<div class="tile"></div>').attr('id', i).css('top', pTop).css('left', pLeft).css('background-color', color).data('color', color).prependTo('#board').click(this.handleTileClick.bind(this))
       }
     },
 
