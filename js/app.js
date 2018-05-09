@@ -5,22 +5,40 @@ jQuery(function ($) {
 
   const App = {
 
-    colors: ['Red', 'Blue', 'Green', 'Purple'],
+    tileTypes: ['tile-a', 'tile-b', 'tile-c', 'tile-d', 'tile-e'],
     boardWidth: 25,
     boardHeight: 15,
     points: 0,
     total: 0,
 
     init: function () {
-      $('#board').width(this.boardWidth * 40).height(this.boardHeight * 40)
-      $('#board-container').width(this.boardWidth * 40)
+      this.updateBoardSizes()
+      this.renderTiles()
+      this.attachThemeHandlers()
+    },
 
+    updateBoardSizes: function () {
+      $('#board').width(this.boardWidth * 40).height(this.boardHeight * 40)
+      $('.container').width(this.boardWidth * 40)
+    },
+
+    renderTiles: function () {
       for (let i = 0; i < this.boardWidth * this.boardHeight; i++) {
         const pTop = Math.floor(i / this.boardWidth) * 40
         const pLeft = (i % this.boardWidth) * 40
-        const color = this.colors[Math.floor(Math.random() * this.colors.length)]
-        $('<div class="tile"></div>').attr('id', i).css('top', pTop).css('left', pLeft).css('background-color', color).data('color', color).prependTo('#board').click(this.handleTileClick.bind(this))
+        const tileType = this.tileTypes[Math.floor(Math.random() * this.tileTypes.length)]
+        $('<div class="tile"></div>').attr('id', i).css('top', pTop).css('left', pLeft).addClass(tileType).data('tile-type', tileType).prependTo('#board').click(this.handleTileClick.bind(this))
       }
+    },
+
+    attachThemeHandlers: function () {
+      $('.change-theme').on('click', this.handleThemeChange.bind(this))
+    },
+
+    handleThemeChange: function (event) {
+      const theme = $(event.target).data('theme')
+      $('#game-container').removeClass().addClass(theme)
+      return false
     },
 
     handleTileClick: function (event) {
@@ -130,7 +148,7 @@ jQuery(function ($) {
     },
 
     same: function (el, nb) {
-      return $(el).data('color') === $('#' + nb).data('color')
+      return $(el).data('tile-type') === $('#' + nb).data('tile-type')
     },
 
     isMarked: function (el) {

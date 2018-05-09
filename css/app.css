@@ -7,13 +7,19 @@ body {
   margin: 0;
   padding: 0;
 }
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
 
 .container {
-  margin: 0 20px;
+  margin: 0 auto;
   width: auto;
 }
 .nav {
-  background-color: #008085;
+  background-color: #00897b;
   color: #fff;
   padding: 10px 0;
 }
@@ -21,26 +27,87 @@ body {
   font-size: 1.4rem;
   padding-right: 10px;
 }
-
 .board {
   position: relative;
   margin-top: 20px;
 }
-
 .scores {
   display: flex;
   justify-content: space-between;
   padding-top: 20px;
 }
+.themes {
+  text-align: center;
+  font-size: .85rem;
+}
+.change-theme {
+  padding: 10px;
+}
+.mark {
+  opacity: 0.5
+}
 
 .tile {
-  border-top: 1px solid black;
-  border-left: 1px solid black;
   position: absolute;
   height: 40px;
   width: 40px;
 }
-
-.mark {
-  opacity: 0.5
+.tile-a {
+  background-color: #0c89dc;
 }
+.tile-b {
+  background-color: #dd514c;
+}
+.tile-c {
+  background-color: #9c27b0;
+}
+.tile-d {
+  background-color: #feeb3b;
+}
+.tile-e {
+  background-color: #5eb95e;
+}
+
+
+
+/* Classic style */
+.classic .tile {
+  border: 2px inset #808080;
+  display: flex;
+  align-items: center;
+  font-family: serif;
+  font-size: 2rem;
+  justify-content: center;
+}
+.classic .tile-a {
+  background-color: #00f;
+}
+.classic .tile-a::after {
+  content: 'A';
+}
+.classic .tile-b {
+  background-color: #f00;
+}
+.classic .tile-b::after {
+  content: 'B';
+}
+.classic .tile-c {
+  background-color: #f0f;
+}
+.classic .tile-c::after {
+  content: 'C';
+}
+.classic .tile-d {
+  background-color: #ff0;
+}
+.classic .tile-d::after {
+  content: 'D';
+}
+.classic .tile-e {
+  background-color: #0ff;
+}
+.classic .tile-e::after {
+  content: 'E';
+}
+
+
