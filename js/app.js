@@ -6,8 +6,8 @@ jQuery(function ($) {
   const App = {
 
     tileTypes: ['tile-a', 'tile-b', 'tile-c', 'tile-d', 'tile-e'],
-    boardWidth: 25,
-    boardHeight: 15,
+    boardWidth: 20,
+    boardHeight: 10,
     points: 0,
     total: 0,
 
@@ -42,19 +42,19 @@ jQuery(function ($) {
     },
 
     handleTileClick: function (event) {
-      const el = event.target
-      if (this.isMarked(el)) {
+      const id = event.target.id
+      if (this.isTileMarked(id)) {
         this.deleteMarked()
-        this.settleDown()
-        this.settleLeft()
+        this.compactColumnsDown()
+        this.compactColumnsLeft()
         this.updateTotal(this.points)
       } else {
         $('.mark').removeClass('mark')
-        let n = this.checkTRBL(el)
-        this.points = (n - 1) * (n - 1)
+        let numMarked = this.checkNeighbors(id)
+        this.points = (numMarked - 1) * (numMarked - 1) // formula (n-1)^2
         $('#points').html('' + this.points)
-        if (n) {
-          this.mark(el)
+        if (numMarked > 0) {
+          this.markTile(id)
         } else {
           this.updatePoints(0)
         }
@@ -72,88 +72,100 @@ jQuery(function ($) {
       this.updatePoints(0)
     },
 
-    settleLeft: function () {
-      let again = false
-      for (let h = 0; h < this.boardWidth - 1; h++) {
-        const col = []
-        for (let v = 0; v < this.boardHeight; v++) {
-          const id = h + (this.boardWidth * v)
-          if (document.getElementById(id.toString())) {
+    compactColumnsLeft: function () {
+      let keepGoing = false
+      for (let col = 0; col < this.boardWidth - 1; col++) {
+        const missingTiles = []
+        for (let row = 0; row < this.boardHeight; row++) {
+          const id = col + (this.boardWidth * row)
+          if (this.tileExists(id)) {
             break
           } else {
-            col.push(id)
-            if (col.length === this.boardHeight) {
-              while (col.length > 0) {
-                const oid = col.pop()
-                if (document.getElementById(oid + 1)) {
-                  again = true
-                  $('#' + (oid + 1)).attr('id', oid).animate({left: '-=40'}, 10)
+            missingTiles.push(id)
+            if (missingTiles.length === this.boardHeight) {
+              while (missingTiles.length > 0) {
+                const missingTileId = missingTiles.pop()
+                const rightNeighborId = missingTileId + 1
+                if (this.tileExists(rightNeighborId)) {
+                  keepGoing = true
+                  $('#' + rightNeighborId).attr('id', missingTileId).animate({left: '-=40'}, 10)
                 }
               }
             }
           }
         }
       }
-      if (again) this.settleLeft()
+      if (keepGoing) {
+        this.compactColumnsLeft()
+      }
     },
 
-    settleDown: function () {
-      let again = false
-      for (let i = this.boardWidth * this.boardHeight - 1; i > -1; i--) {
-        if (!document.getElementById(i.toString())) {
-          if (document.getElementById((i - this.boardWidth).toString())) {
-            $('#' + (i - this.boardWidth)).attr('id', i).animate({top: '+=40'}, 10)
-            again = true
+    compactColumnsDown: function () {
+      let keepGoing = false
+      for (let id = this.boardWidth * this.boardHeight - 1; id > -1; id--) {
+        if (!this.tileExists(id)) {
+          const topNeighborId = id - this.boardWidth
+          if (this.tileExists(topNeighborId)) {
+            $('#' + topNeighborId).attr('id', id).animate({top: '+=40'}, 10)
+            keepGoing = true
           }
         }
       }
-      if (again) this.settleDown()
+      if (keepGoing) {
+        this.compactColumnsDown()
+      }
     },
 
     deleteMarked: function () {
       $('.mark').remove()
     },
 
-    mark: function (el) {
-      $(el).addClass('mark')
+    markTile: function (id) {
+      $('#' + id).addClass('mark')
     },
 
-    checkTRBL: function (el) {
+    tileExists: function (id) {
+      return $('#' + id).length === 1
+    },
+
+    isTileMarked: function (id) {
+      return $('#' + id).hasClass('mark')
+    },
+
+    isTileSameType: function (myId, neighborId) {
+      return $('#' + myId).data('tile-type') === $('#' + neighborId).data('tile-type')
+    },
+
+    checkNeighbors: function (id) {
       let c = 0
-      const t = parseInt(el.id) - this.boardWidth
-      const r = parseInt(el.id) + 1
-      const b = parseInt(el.id) + this.boardWidth
-      const l = parseInt(el.id) - 1
-      if (t > -1 && this.same(el, t) && !this.isMarked(document.getElementById(t.toString()))) {
+      const numId = parseInt(id, 10)
+      const top = numId - this.boardWidth
+      const right = numId + 1
+      const bottom = numId + this.boardWidth
+      const left = numId - 1
+      if (top > -1 && this.isTileSameType(id, top) && !this.isTileMarked(top)) {
         c++
-        this.mark(document.getElementById(t.toString()))
-        c += this.checkTRBL(document.getElementById(t.toString()))
+        this.markTile(top)
+        c += this.checkNeighbors(top)
       }
-      if (r % this.boardWidth !== 0 && this.same(el, r) && !this.isMarked(document.getElementById(r.toString()))) {
+      if (right % this.boardWidth !== 0 && this.isTileSameType(id, right) && !this.isTileMarked(right)) {
         c++
-        this.mark(document.getElementById(r.toString()))
-        c += this.checkTRBL(document.getElementById(r.toString()))
+        this.markTile(right)
+        c += this.checkNeighbors(right)
       }
-      if (b < this.boardWidth * this.boardHeight && this.same(el, b) && !this.isMarked(document.getElementById(b.toString()))) {
+      if (bottom < this.boardWidth * this.boardHeight && this.isTileSameType(id, bottom) && !this.isTileMarked(bottom)) {
         c++
-        this.mark(document.getElementById(b.toString()))
-        c += this.checkTRBL(document.getElementById(b.toString()))
+        this.markTile(bottom)
+        c += this.checkNeighbors(bottom)
       }
-      if ((l + 1) % this.boardWidth !== 0 && this.same(el, l) && !this.isMarked(document.getElementById(l.toString()))) {
+      if ((left + 1) % this.boardWidth !== 0 && this.isTileSameType(id, left) && !this.isTileMarked(left)) {
         c++
-        this.mark(document.getElementById(l.toString()))
-        c += this.checkTRBL(document.getElementById(l.toString()))
+        this.markTile(left)
+        c += this.checkNeighbors(left)
       }
       return c
-    },
-
-    same: function (el, nb) {
-      return $(el).data('tile-type') === $('#' + nb).data('tile-type')
-    },
-
-    isMarked: function (el) {
-      return $(el).hasClass('mark')
     }
+
   }
 
   App.init()
