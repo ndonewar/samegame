@@ -50,7 +50,6 @@ a:link, a:visited, a:hover {
 }
 
 .tile {
-  cursor: pointer;
   position: absolute;
   height: 40px;
   width: 40px;

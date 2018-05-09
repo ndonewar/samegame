@@ -27,7 +27,7 @@ jQuery(function ($) {
         const pTop = Math.floor(i / this.boardWidth) * 40
         const pLeft = (i % this.boardWidth) * 40
         const tileType = this.tileTypes[Math.floor(Math.random() * this.tileTypes.length)]
-        $('<div class="tile"></div>').attr('id', i).css('top', pTop).css('left', pLeft).addClass(tileType).data('tile-type', tileType).prependTo('#board').click(this.handleTileClick.bind(this))
+        $('<a class="tile" href="#"></a>').attr('id', i).css('top', pTop).css('left', pLeft).addClass(tileType).data('tile-type', tileType).appendTo('#board').click(this.handleTileClick.bind(this))
       }
     },
 
