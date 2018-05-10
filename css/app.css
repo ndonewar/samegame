@@ -54,6 +54,10 @@ a:link, a:visited, a:hover {
   height: 40px;
   width: 40px;
 }
+.tile:link, .tile:visited, .tile:hover {
+  color: #000;
+  text-decoration: none;
+}
 .tile-a {
   background-color: #0c89dc;
 }
