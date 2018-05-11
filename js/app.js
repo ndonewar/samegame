@@ -36,12 +36,13 @@ jQuery(function ($) {
     },
 
     handleThemeChange: function (event) {
+      event.preventDefault()
       const theme = $(event.target).data('theme')
       $('#game-container').removeClass().addClass(theme)
-      return false
     },
 
     handleTileClick: function (event) {
+      event.preventDefault()
       const id = event.target.id
       if (this.isTileMarked(id)) {
         this.deleteMarked()
