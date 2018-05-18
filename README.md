@@ -6,4 +6,4 @@ I recently found the files again. The code wasn't ideal, but the game was playab
 
 ## Demo
 
-[http://donewar.com/samegame-jquery/](http://donewar.com/samegame-jquery/)
+[https://donewar.com/samegame-jquery/](https://donewar.com/samegame-jquery/)
